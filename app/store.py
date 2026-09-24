@@ -36,6 +36,12 @@ class InteractionStore:
             rows = [row for row in rows if row.get("session_id") == session_id]
         return rows[-limit:]
 
+    def get(self, interaction_id: str) -> dict | None:
+        for row in self._read(self.path):
+            if row.get("interaction_id") == interaction_id:
+                return row
+        return None
+
     def metrics(self) -> dict:
         rows = self._read(self.path)
         by_language = {}
@@ -44,7 +50,7 @@ class InteractionStore:
             by_language[language] = by_language.get(language, 0) + 1
         return {
             "total_interactions": len(rows),
-            "unique_sessions": len({row.get("session_id") for row in rows if row.get("session_id")} ),
+            "unique_sessions": len({row.get("session_id") for row in rows if row.get("session_id")}),
             "by_language": by_language,
             "escalated_cases": sum(1 for row in rows if row.get("requires_human")),
             "farm_logs": len(self._read(self.logs_path)),

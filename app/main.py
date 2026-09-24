@@ -10,7 +10,7 @@ from .safety import classify, validate_answer
 from .schemas import FarmLogRequest, FarmLogResponse, VoiceQuery, VoiceResponse
 from .store import InteractionStore
 
-app = FastAPI(title="AgroVoice — Powered by N-ATLAS", version="0.2.0")
+app = FastAPI(title="AgroVoice — Powered by N-ATLAS", version="0.3.0")
 natlas = NatlasAdapter()
 knowledge = KnowledgeBase()
 store = InteractionStore()
@@ -19,6 +19,17 @@ store = InteractionStore()
 def evaluator_page():
     page = Path(__file__).resolve().parent.parent / "web" / "index.html"
     return HTMLResponse(page.read_text(encoding="utf-8"))
+
+@app.get("/natlas", response_class=HTMLResponse)
+def natlas_evidence_page():
+    mode = natlas.mode
+    warning = "MOCK MODE — this is not N-ATLAS evidence" if mode == "mock" else "OFFICIAL MODE — redact credentials before sharing traces"
+    return HTMLResponse(f"""<!doctype html><html><head><meta charset='utf-8'><title>N-ATLAS Integration Evidence</title><style>body{{font-family:system-ui;max-width:800px;margin:2rem auto;padding:0 1rem;color:#18221d}}pre{{background:#f3f7f4;padding:1rem;border-radius:8px;overflow:auto}}.warning{{padding:1rem;background:#fff3cd;border-radius:8px}}</style></head><body><h1>AgroVoice N-ATLAS Integration Evidence</h1><div class='warning'><strong>{warning}</strong></div><h2>Critical path</h2><pre>audio → official N-ATLAS ASR → transcript → context/router → official N-ATLAS LLM → safety validator → response</pre><h2>Configured boundary</h2><pre>mode: {mode}
+ASR endpoint configured: {bool(natlas.asr_url)}
+LLM endpoint configured: {bool(natlas.llm_url)}
+API key present: {bool(natlas.api_key)}
+ASR model: adapter-reported per request
+LLM model: adapter-reported per request</pre><p>The repository adapter records model identifiers, mode, latency, source cards, escalation, and request-level trace fields. Credentials are never displayed.</p><p>Official endpoint schemas, request IDs, and redacted logs must be added after N-ATLAS access is granted.</p></body></html>""")
 
 @app.get("/health")
 def health():
@@ -44,7 +55,7 @@ def voice_query(query: VoiceQuery):
         interaction_id = str(uuid.uuid4())
         latency_ms = int((time.perf_counter() - started) * 1000)
         trace = {"asr_model": asr.model, "asr_mode": asr.mode, "asr_latency_ms": asr.latency_ms, "llm_mode": natlas.mode, "knowledge_card_count": len(cards)}
-        record = {"interaction_id": interaction_id, "language": query.language, "transcription": asr.text, "intent": intent, "crop": query.crop, "risk_level": risk, "answer": answer, "source_card_ids": [c["id"] for c in cards], "requires_human": requires_human, "session_id": query.session_id}
+        record = {"interaction_id": interaction_id, "language": query.language, "transcription": asr.text, "intent": intent, "crop": query.crop, "risk_level": risk, "answer": answer, "source_card_ids": [c["id"] for c in cards], "requires_human": requires_human, "session_id": query.session_id, "trace": trace}
         store.append(record)
         return VoiceResponse(interaction_id=interaction_id, adapter_mode=natlas.mode, transcription=asr.text, language=query.language, intent=intent, crop=query.crop, risk_level=risk, clarification_question=clarification, answer=answer, source_card_ids=[c["id"] for c in cards], requires_human=requires_human, feedback_prompt="Did this answer help you?", latency_ms=latency_ms, trace=trace)
     except HTTPException:
@@ -70,6 +81,13 @@ def farm_log(request: FarmLogRequest):
 @app.get("/history")
 def history(session_id: str | None = None, limit: int = 50):
     return {"items": store.history(session_id=session_id, limit=min(limit, 200))}
+
+@app.get("/evidence/{interaction_id}")
+def evidence(interaction_id: str):
+    record = store.get(interaction_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail="Interaction evidence not found")
+    return record
 
 @app.get("/metrics")
 def metrics():

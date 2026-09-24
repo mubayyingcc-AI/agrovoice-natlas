@@ -34,3 +34,15 @@ def test_farm_log_and_metrics_endpoints():
     metrics = client.get('/metrics')
     assert metrics.status_code == 200
     assert 'total_interactions' in metrics.json()
+
+def test_natlas_evidence_page_is_honest_about_mock_mode():
+    response = client.get('/natlas')
+    assert response.status_code == 200
+    assert 'MOCK MODE' in response.text
+
+def test_record_level_evidence_lookup():
+    response = client.post('/voice/query', json={'language':'yoruba','audio_text':'My maize leaves are yellow','crop':'maize','consent':True})
+    interaction_id = response.json()['interaction_id']
+    evidence = client.get(f'/evidence/{interaction_id}')
+    assert evidence.status_code == 200
+    assert evidence.json()['trace']['asr_mode'] == 'mock'
