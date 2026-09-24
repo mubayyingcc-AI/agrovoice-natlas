@@ -5,7 +5,11 @@ from pathlib import Path
 
 class InteractionStore:
     def __init__(self):
-        self.data_dir = Path(os.getenv("DATA_DIR", "data"))
+        project_root = Path(__file__).resolve().parent.parent
+        configured = os.getenv("DATA_DIR")
+        self.data_dir = Path(configured) if configured else project_root / "data"
+        if not self.data_dir.is_absolute():
+            self.data_dir = project_root / self.data_dir
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.path = self.data_dir / "interactions.jsonl"
         self.logs_path = self.data_dir / "farm_logs.jsonl"
