@@ -1,0 +1,1 @@
+"""AgroVoice application package."""

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "maize-basic-observation-v1",
+    "title": "Maize: basic symptom observation",
+    "content": "Inspect several plants and note whether yellowing is on older or newer leaves, whether it is spreading, and whether the soil is unusually wet or dry. Record the crop age and recent rainfall. Use these observations to guide an extension officer; do not treat a symptom as a confirmed diagnosis.",
+    "crop": "maize",
+    "topic": "symptom_observation",
+    "keywords": ["maize", "corn", "leaf", "yellow", "problem", "rain", "soil", "plant"],
+    "source": "Pilot-reviewed agricultural extension card",
+    "publisher": "AgroVoice pilot team",
+    "date": "2026-09-24",
+    "region": "Nigeria",
+    "language": "English",
+    "review_status": "approved",
+    "version": "1.0"
+  },
+  {
+    "id": "tomato-basic-observation-v1",
+    "title": "Tomato: basic symptom observation",
+    "content": "Inspect the underside of leaves and several plants. Note curling, yellowing, visible insects, the crop stage, and whether the problem is spreading. Avoid applying chemicals based only on an AI response; contact a qualified extension officer for treatment advice.",
+    "crop": "tomato",
+    "topic": "symptom_observation",
+    "keywords": ["tomato", "tumatir", "leaf", "yellow", "curling", "insect", "pest", "plant"],
+    "source": "Pilot-reviewed agricultural extension card",
+    "publisher": "AgroVoice pilot team",
+    "date": "2026-09-24",
+    "region": "Nigeria",
+    "language": "English",
+    "review_status": "approved",
+    "version": "1.0"
+  },
+  {
+    "id": "farm-log-planting-v1",
+    "title": "Farm record: planting activity",
+    "content": "Record the crop planted, approximate planting date, farm area if the farmer chooses to provide it, and the next follow-up date. Ask the farmer to confirm the date before saving it as a precise record.",
+    "crop": "maize",
+    "topic": "farm_log",
+    "keywords": ["plant", "planted", "seed", "maize", "tomato"],
+    "source": "Pilot product rule",
+    "publisher": "AgroVoice pilot team",
+    "date": "2026-09-24",
+    "region": "Nigeria",
+    "language": "English",
+    "review_status": "approved",
+    "version": "1.0"
+  }
+]

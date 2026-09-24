@@ -1,0 +1,21 @@
+{
+  "interaction_id": "string",
+  "participant_pseudonym": "string",
+  "consent": true,
+  "language": "hausa|yoruba|igbo|nigerian_english",
+  "timestamp": "ISO-8601",
+  "transcript": "string",
+  "human_verified_transcript": "string|null",
+  "crop": "maize|tomato|null",
+  "intent": "string",
+  "risk_level": "green|amber|red|grey",
+  "source_card_ids": ["string"],
+  "answer": "string",
+  "requires_human": false,
+  "user_understood": "boolean|null",
+  "user_found_actionable": "boolean|null",
+  "reviewer_relevance_score": "1-5|null",
+  "latency_ms": "number|null",
+  "failure_category": "string|null",
+  "product_change": "string|null"
+}
