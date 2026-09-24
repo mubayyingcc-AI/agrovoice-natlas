@@ -10,6 +10,8 @@ The repository contains a runnable API foundation with:
 - structured interaction and VoiceBench evaluation records;
 - a human-escalation path;
 - a developer-facing `POST /voice/query` gateway;
+- conversation history, farm-log, and metrics endpoints;
+- a lightweight evaluator page at `/`;
 - a mock mode for local development before official N-ATLAS credentials are available.
 
 ## Important integration note
@@ -29,6 +31,8 @@ uvicorn app.main:app --reload
 Open `http://localhost:8000/docs`.
 
 The default mode is `mock`, which makes the complete orchestration testable without external credentials. The mock adapter is deliberately labelled in responses and logs.
+
+The designated WhatsApp pilot number is stored as `WHATSAPP_PILOT_NUMBER` for configuration and documentation only. This repository does not send WhatsApp messages or claim that the number is connected to an approved WhatsApp Business API. A verified WhatsApp provider webhook must be connected before pilot use.
 
 ## Test
 

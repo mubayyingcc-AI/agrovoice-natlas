@@ -1,20 +1,28 @@
+import os
 import time
 import uuid
+from pathlib import Path
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 from .adapters import NatlasAdapter
 from .knowledge import KnowledgeBase
 from .safety import classify, validate_answer
-from .schemas import VoiceQuery, VoiceResponse
+from .schemas import FarmLogRequest, FarmLogResponse, VoiceQuery, VoiceResponse
 from .store import InteractionStore
 
-app = FastAPI(title="AgroVoice — Powered by N-ATLAS", version="0.1.0")
+app = FastAPI(title="AgroVoice — Powered by N-ATLAS", version="0.2.0")
 natlas = NatlasAdapter()
 knowledge = KnowledgeBase()
 store = InteractionStore()
 
+@app.get("/", response_class=HTMLResponse)
+def evaluator_page():
+    page = Path(__file__).resolve().parent.parent / "web" / "index.html"
+    return HTMLResponse(page.read_text(encoding="utf-8"))
+
 @app.get("/health")
 def health():
-    return {"status": "ok", "adapter_mode": natlas.mode, "warning": "mock mode is not N-ATLAS evidence" if natlas.mode == "mock" else None}
+    return {"status": "ok", "adapter_mode": natlas.mode, "whatsapp_pilot_number": os.getenv("WHATSAPP_PILOT_NUMBER"), "warning": "mock mode is not N-ATLAS evidence" if natlas.mode == "mock" else None}
 
 @app.post("/voice/query", response_model=VoiceResponse)
 def voice_query(query: VoiceQuery):
@@ -43,3 +51,26 @@ def voice_query(query: VoiceQuery):
         raise
     except Exception as exc:
         raise HTTPException(status_code=502, detail=str(exc))
+
+@app.post("/farm-log", response_model=FarmLogResponse)
+def farm_log(request: FarmLogRequest):
+    if not request.consent:
+        raise HTTPException(status_code=400, detail="Consent is required before storing a farm log")
+    text = request.activity_text.lower()
+    if "plant" in text or "seed" in text:
+        activity = "planting"
+    elif "harvest" in text:
+        activity = "harvest"
+    else:
+        activity = "farm_activity"
+    log_id = str(uuid.uuid4())
+    store.append_farm_log({"log_id": log_id, "language": request.language, "activity": activity, "activity_text": request.activity_text, "crop": request.crop, "session_id": request.session_id})
+    return FarmLogResponse(log_id=log_id, crop=request.crop, activity=activity, status="recorded_with_consent", adapter_mode=natlas.mode)
+
+@app.get("/history")
+def history(session_id: str | None = None, limit: int = 50):
+    return {"items": store.history(session_id=session_id, limit=min(limit, 200))}
+
+@app.get("/metrics")
+def metrics():
+    return store.metrics()

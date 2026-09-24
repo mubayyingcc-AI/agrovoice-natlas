@@ -24,3 +24,13 @@ def test_query_returns_trace_and_sources():
     assert payload['source_card_ids']
     assert payload['trace']['asr_mode'] == 'mock'
     assert payload['feedback_prompt']
+
+def test_farm_log_and_metrics_endpoints():
+    response = client.post('/farm-log', json={'language':'hausa','activity_text':'Today I planted maize','crop':'maize','consent':True})
+    assert response.status_code == 200
+    assert response.json()['activity'] == 'planting'
+    history = client.get('/history')
+    assert history.status_code == 200
+    metrics = client.get('/metrics')
+    assert metrics.status_code == 200
+    assert 'total_interactions' in metrics.json()

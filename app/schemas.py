@@ -13,6 +13,13 @@ class VoiceQuery(BaseModel):
     session_id: str | None = None
     consent: bool = False
 
+class FarmLogRequest(BaseModel):
+    language: Language
+    activity_text: str = Field(min_length=1)
+    crop: str | None = None
+    session_id: str | None = None
+    consent: bool = False
+
 class VoiceResponse(BaseModel):
     interaction_id: str
     adapter_mode: str
@@ -28,3 +35,10 @@ class VoiceResponse(BaseModel):
     feedback_prompt: str
     latency_ms: int
     trace: dict[str, Any]
+
+class FarmLogResponse(BaseModel):
+    log_id: str
+    crop: str | None
+    activity: str
+    status: str
+    adapter_mode: str
