@@ -51,6 +51,8 @@ The current foundation deployment is available at:
 
 <https://agrovoice-natlas-production.up.railway.app>
 
+The Railway project now contains a `Postgres` service. The web service is wired to it with the private reference `DATABASE_URL=${{Postgres.DATABASE_URL}}`; the application uses PostgreSQL when available and retains JSONL only for local fallback.
+
 ```bash
 curl https://YOUR-RAILWAY-DOMAIN/health
 curl https://YOUR-RAILWAY-DOMAIN/natlas

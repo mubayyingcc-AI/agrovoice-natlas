@@ -35,7 +35,7 @@ LLM model: adapter-reported per request</pre><p>The repository adapter records m
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "adapter_mode": natlas.mode, "whatsapp_pilot_number": os.getenv("WHATSAPP_PILOT_NUMBER"), "warning": "mock mode is not N-ATLAS evidence" if natlas.mode == "mock" else None}
+    return {"status": "ok", "adapter_mode": natlas.mode, "storage_backend": store.backend, "whatsapp_pilot_number": os.getenv("WHATSAPP_PILOT_NUMBER"), "warning": "mock mode is not N-ATLAS evidence" if natlas.mode == "mock" else None}
 
 @app.post("/voice/query", response_model=VoiceResponse)
 def voice_query(query: VoiceQuery):
