@@ -42,6 +42,16 @@ The designated WhatsApp pilot number is stored as `WHATSAPP_PILOT_NUMBER` for co
 pytest -q
 ```
 
+## Deploy to Railway
+
+The repository includes `Dockerfile`, `railway.toml`, and a complete Git Bash deployment guide in [`docs/deployment-railway.md`](docs/deployment-railway.md). The initial live deployment should use `NATLAS_MODE=mock` and must remain clearly labelled as a foundation demo until official N-ATLAS access is verified.
+
+### Live foundation demo
+
+<https://agrovoice-natlas-production.up.railway.app>
+
+Railway is connected to the GitHub `main` branch for future deployments. Current public routes include `/`, `/docs`, `/health`, `/natlas`, `/metrics`, and `/evidence/{interaction_id}`.
+
 ## API example
 
 ```bash

@@ -1,0 +1,12 @@
+.git
+.github
+.venv
+__pycache__
+.pytest_cache
+.env
+*.pyc
+data/interactions.jsonl
+data/farm_logs.jsonl
+README.md
+PROPOSAL.md
+tests
