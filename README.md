@@ -1,5 +1,7 @@
 # AgroVoice — Powered by N-ATLAS
 
+![AgroVoice project logo](assets/branding/agrovoice-logo.png)
+
 AgroVoice is a voice-to-action agricultural assistance foundation for Nigerian smallholder farmers. It is designed for NAIC 2026 Problem Statement 02: Voice-First Access.
 
 The repository contains a runnable API foundation with:

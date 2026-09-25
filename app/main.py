@@ -4,6 +4,7 @@ import uuid
 from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from .adapters import NatlasAdapter
 from .knowledge import KnowledgeBase
 from .safety import classify, validate_answer
@@ -11,6 +12,7 @@ from .schemas import FarmLogRequest, FarmLogResponse, VoiceQuery, VoiceResponse
 from .store import InteractionStore
 
 app = FastAPI(title="AgroVoice — Powered by N-ATLAS", version="0.3.0")
+app.mount("/assets", StaticFiles(directory=Path(__file__).resolve().parent.parent / "assets"), name="assets")
 natlas = NatlasAdapter()
 knowledge = KnowledgeBase()
 store = InteractionStore()
