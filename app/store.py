@@ -85,7 +85,7 @@ class InteractionStore:
                     INSERT INTO interactions
                     (interaction_id, session_id, language, transcription, intent, crop,
                      risk_level, answer, source_card_ids, requires_human, trace)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s, %s, %s::jsonb)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s, %s::jsonb)
                     ON CONFLICT (interaction_id) DO NOTHING
                     """,
                     (
