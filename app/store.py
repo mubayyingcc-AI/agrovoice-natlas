@@ -14,8 +14,10 @@ class InteractionStore:
         if self.database_url:
             try:
                 import psycopg
+                from psycopg.types.json import Jsonb
 
                 self._postgres = psycopg
+                self._jsonb = Jsonb
                 self._init_postgres()
             except Exception as exc:
                 # Keep local/demo startup resilient, but expose the fallback in metrics.
@@ -90,8 +92,8 @@ class InteractionStore:
                         record["interaction_id"], record.get("session_id"), record["language"],
                         record["transcription"], record.get("intent"), record.get("crop"),
                         record.get("risk_level"), record.get("answer"),
-                        json.dumps(record.get("source_card_ids", [])), record.get("requires_human", False),
-                        json.dumps(record.get("trace", {})),
+                        self._jsonb(record.get("source_card_ids", [])), record.get("requires_human", False),
+                        self._jsonb(record.get("trace", {})),
                     ),
                 )
                 conn.commit()
