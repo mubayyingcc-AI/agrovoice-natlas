@@ -48,6 +48,16 @@ Each consented interaction should retain only the minimum information needed for
 
 `POST /voice/query` is the first developer-facing gateway. It should later accept an audio file or signed audio URL instead of the temporary `audio_text` field. The response is structured so that a WhatsApp, IVR, PWA, cooperative dashboard, or future public-service application can reuse the same orchestration.
 
+## Live WhatsApp and escalation boundary
+
+- `GET /whatsapp/webhook` implements Meta webhook verification.
+- `POST /whatsapp/webhook` validates the optional Meta signature, downloads a voice-note media object, sends it to the configured N-ATLAS ASR adapter, runs the safety pipeline, and replies through the WhatsApp Cloud API.
+- `GET /escalations` lists human-review cases.
+- `PATCH /escalations/{escalation_id}` acknowledges or resolves a case.
+- PostgreSQL creates `farm_logs` and `escalations` tables at application startup.
+
+The WhatsApp route remains non-processing in mock mode. Official N-ATLAS mode requires real endpoint schemas and credentials supplied by NCAIR/N-ATLAS; placeholders must not be replaced with invented URLs.
+
 ## Evidence to collect
 
 - N-ATLAS ASR and generation traces;

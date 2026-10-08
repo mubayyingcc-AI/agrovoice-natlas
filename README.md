@@ -13,6 +13,8 @@ The repository contains a runnable API foundation with:
 - a human-escalation path;
 - a developer-facing `POST /voice/query` gateway;
 - conversation history, farm-log, and metrics endpoints;
+- a Meta WhatsApp webhook with voice-media download and reply boundary;
+- PostgreSQL-backed farm logs and open/acknowledged/resolved escalation records;
 - a lightweight evaluator page at `/`;
 - a mock mode for local development before official N-ATLAS credentials are available.
 
@@ -34,7 +36,7 @@ Open `http://localhost:8000/docs`.
 
 The default mode is `mock`, which makes the complete orchestration testable without external credentials. The mock adapter is deliberately labelled in responses and logs.
 
-The designated WhatsApp pilot number is stored as `WHATSAPP_PILOT_NUMBER` for configuration and documentation only. This repository does not send WhatsApp messages or claim that the number is connected to an approved WhatsApp Business API. A verified WhatsApp provider webhook must be connected before pilot use.
+The WhatsApp integration is implemented at `GET/POST /whatsapp/webhook`, but it remains inactive until Meta credentials and a verified callback are configured. In mock mode, incoming voice notes are acknowledged but not transcribed; official N-ATLAS mode is required for real audio processing.
 
 ## Test
 
@@ -50,7 +52,7 @@ The repository includes `Dockerfile`, `railway.toml`, and a complete Git Bash de
 
 <https://agrovoice-natlas-production.up.railway.app>
 
-Railway is connected to the GitHub `main` branch for future deployments. Current public routes include `/`, `/docs`, `/health`, `/natlas`, `/metrics`, and `/evidence/{interaction_id}`.
+Railway is connected to the GitHub `main` branch for future deployments. Current public routes include `/`, `/docs`, `/health`, `/natlas`, `/metrics`, `/evidence/{interaction_id}`, `/whatsapp/webhook`, and `/escalations`.
 
 ## API example
 

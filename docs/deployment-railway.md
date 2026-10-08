@@ -69,6 +69,19 @@ The current foundation deployment is available at:
 
 The Railway project now contains a `Postgres` service. The web service is wired to it with the private reference `DATABASE_URL=${{Postgres.DATABASE_URL}}`; the application uses PostgreSQL when available and retains JSONL only for local fallback.
 
+## WhatsApp and official N-ATLAS activation
+
+The application now exposes the Meta webhook boundary at `/whatsapp/webhook` and creates PostgreSQL `farm_logs` and `escalations` tables. Configure Meta credentials only in Railway variables:
+
+```bash
+railway variable set WHATSAPP_VERIFY_TOKEN='choose-a-long-random-value' --service agrovoice-natlas
+railway variable set WHATSAPP_ACCESS_TOKEN='paste-the-meta-token-here' --service agrovoice-natlas
+railway variable set WHATSAPP_PHONE_NUMBER_ID='paste-the-meta-phone-number-id-here' --service agrovoice-natlas
+railway variable set WHATSAPP_APP_SECRET='paste-the-meta-app-secret-here' --service agrovoice-natlas
+```
+
+Do not set `NATLAS_MODE=http` until NCAIR/N-ATLAS supplies the official ASR and LLM endpoint URLs, request schemas, response schemas, model identifiers, and credentials. The adapter is configurable but intentionally does not invent provider endpoints.
+
 ```bash
 curl https://YOUR-RAILWAY-DOMAIN/health
 curl https://YOUR-RAILWAY-DOMAIN/natlas

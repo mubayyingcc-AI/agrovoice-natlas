@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 
 Language = Literal["hausa", "yoruba", "igbo", "nigerian_english"]
 Risk = Literal["green", "amber", "red", "grey"]
+EscalationStatus = Literal["open", "acknowledged", "resolved"]
 
 class VoiceQuery(BaseModel):
     language: Language
@@ -19,6 +20,11 @@ class FarmLogRequest(BaseModel):
     crop: str | None = None
     session_id: str | None = None
     consent: bool = False
+
+class EscalationUpdate(BaseModel):
+    status: EscalationStatus
+    assigned_to: str | None = None
+    resolution_note: str | None = None
 
 class VoiceResponse(BaseModel):
     interaction_id: str
@@ -42,3 +48,17 @@ class FarmLogResponse(BaseModel):
     activity: str
     status: str
     adapter_mode: str
+
+class WhatsAppWebhookResponse(BaseModel):
+    status: str
+    interaction_id: str | None = None
+    message: str | None = None
+    whatsapp_configured: bool
+
+class EscalationResponse(BaseModel):
+    escalation_id: str
+    source_interaction_id: str | None
+    status: EscalationStatus
+    reason: str
+    assigned_to: str | None = None
+    resolution_note: str | None = None
