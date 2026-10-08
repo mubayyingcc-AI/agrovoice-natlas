@@ -32,6 +32,22 @@ railway domain
 
 If a Railway project already exists, use `railway link` to select it instead of `railway init`. The CLI may open a browser for authentication; do not paste tokens into source files or commit them.
 
+### Windows Git Bash: important service-targeting rule
+
+The repository folder is `agrovoice-natlas`, not `agrovoice`. Also, the Railway project contains two services: the web service `agrovoice-natlas` and the database service `Postgres`. Always pass the web service explicitly when deploying or setting web variables:
+
+```bash
+cd "$HOME/agrovoice-natlas"
+railway link --project agrovoice-natlas --environment production --service agrovoice-natlas
+railway variable set NATLAS_MODE=mock --service agrovoice-natlas
+railway variable set WHATSAPP_PILOT_NUMBER=+2348112051880 --service agrovoice-natlas
+railway up --yes --detach --service agrovoice-natlas
+```
+
+If `railway link` interactively asks for a service, select `agrovoice-natlas`, never `Postgres`. Selecting `Postgres` changes the default linked service for the local folder, although the explicit `--service agrovoice-natlas` deployment command still targets the web service.
+
+Do not run `cd agrovoice` from `~/agrovoice-natlas`; that would incorrectly look for a nested folder.
+
 ## Production N-ATLAS configuration
 
 Do not set these until official N-ATLAS access and exact payload schemas are confirmed:
